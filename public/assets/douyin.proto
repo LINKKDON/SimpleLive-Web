@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+message PushFrame {
+    uint64 logId = 1;
+    string payloadType = 2;
+    bytes payload = 3;
+}
+
+message Response {
+    repeated Message messagesList = 1;
+    string cursor = 2;
+    uint64 fetchInterval = 3;
+    bool needAck = 4;
+    string internalExt = 5;
+}
+
+message Message {
+    string method = 1;
+    bytes payload = 2;
+}
+
+message ChatMessage {
+    User user = 1;
+    string content = 2;
+}
+
+message GiftMessage {
+    User user = 1;
+    Gift gift = 2;
+    uint64 comboCount = 3;
+}
+
+message LikeMessage {
+    User user = 1;
+    uint64 count = 2;
+}
+
+message MemberMessage {
+    User user = 1;
+}
+
+message User {
+    uint64 id = 1;
+    string nickName = 2;
+}
+
+message Gift {
+    string name = 1;
+}

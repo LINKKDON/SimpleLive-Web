@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>播放器 - Simple Live</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/danmaku.css">
+</head>
+<body class="player-page">
+    <div class="player-container">
+        <!-- 顶部导航 -->
+        <div class="player-header">
+            <a href="/" class="back-btn">← 返回首页</a>
+            <h2 id="roomTitle">加载中...</h2>
+        </div>
+
+        <!-- 视频播放器 -->
+        <div class="video-wrapper" id="videoWrapper">
+            <video id="videoPlayer" class="video-player" controls autoplay muted></video>
+            
+            <!-- 弹幕层 -->
+            <div id="danmakuLayer"></div>
+            
+            <!-- 弹幕统计 -->
+            <div class="danmaku-stats" id="danmakuStats">
+                <div class="stat-item">
+                    <span class="stat-icon">🔥</span>
+                    <span id="popularityCount">-</span>
+                </div>
+            </div>
+            
+            <div id="playerLoading" class="player-loading">
+                <div class="loading-spinner"></div>
+                <p>正在加载直播流...</p>
+            </div>
+            <div id="playerError" class="player-error" style="display: none;">
+                <p class="error-text"></p>
+                <button class="retry-btn" onclick="retryPlay()">重试</button>
+            </div>
+            
+            <!-- 弹幕控制按钮 -->
+            <div class="video-controls">
+                <button id="toggleDanmaku" class="control-btn" title="弹幕开关">
+                    💬 弹幕
+                </button>
+                <button id="danmakuSettings" class="control-btn" title="弹幕设置">
+                    ⚙️ 设置
+                </button>
+            </div>
+        </div>
+
+        <!-- 直播间信息 -->
+        <div class="room-info">
+            <div class="streamer-info">
+                <img id="streamerAvatar" class="streamer-avatar" src="" alt="">
+                <div class="streamer-details">
+                    <h3 id="streamerName">主播名称</h3>
+                    <p id="roomIntro" class="room-intro">直播间简介</p>
+                </div>
+            </div>
+            <div class="room-stats">
+                <span class="stat-item">
+                    <span class="stat-icon">👥</span>
+                    <span id="onlineCount">-</span> 人气
+                </span>
+                <span class="stat-item">
+                    <span class="stat-icon">🎬</span>
+                    <span id="roomStatus">直播中</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- 清晰度选择 -->
+        <div class="quality-selector" id="qualitySelector" style="display: none;">
+            <h3>清晰度</h3>
+            <div id="qualityButtons" class="quality-buttons"></div>
+        </div>
+    </div>
+
+    <!-- 弹幕设置弹窗 -->
+    <div id="settingsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="danmaku-settings">
+                <h3>弹幕设置</h3>
+                
+                <div class="setting-item">
+                    <label class="switch-container">
+                        <span>显示弹幕</span>
+                        <label class="switch">
+                            <input type="checkbox" id="enableDanmaku" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <label>
+                        不透明度
+                        <span class="value-display" id="opacityValue">80%</span>
+                    </label>
+                    <input type="range" id="danmakuOpacity" min="0" max="100" value="80">
+                </div>
+                
+                <div class="setting-item">
+                    <label>
+                        字体大小
+                        <span class="value-display" id="fontSizeValue">24px</span>
+                    </label>
+                    <input type="range" id="danmakuFontSize" min="16" max="36" value="24">
+                </div>
+                
+                <div class="setting-item">
+                    <label>
+                        弹幕速度
+                        <span class="value-display" id="speedValue">8秒</span>
+                    </label>
+                    <input type="range" id="danmakuSpeed" min="4" max="12" value="8">
+                </div>
+                
+                <div class="setting-item">
+                    <label>
+                        显示区域
+                        <span class="value-display" id="areaValue">100%</span>
+                    </label>
+                    <input type="range" id="danmakuArea" min="25" max="100" value="100">
+                </div>
+                
+                <button class="close-modal-btn" onclick="closeSettingsModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入 flv.js -->
+    <!-- 引入第三方库 -->
+    <script src="https://cdn.jsdelivr.net/npm/flv.js@1.6.2/dist/flv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hy-barrage@1.0.1/dist/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.2.5/dist/protobuf.min.js"></script>
+
+    <!-- 引入站点脚本 -->
+    <script src="/js/sites/bilibili.js"></script>
+    <script src="/js/sites/douyu.js"></script>
+    <script src="/js/sites/huya.js"></script>
+    <script src="/js/sites/douyin.js"></script>
+
+    <!-- 引入核心逻辑 -->
+    <script src="/js/danmaku.js"></script>
+    <script src="/js/player.js"></script>
+</body>
+</html>

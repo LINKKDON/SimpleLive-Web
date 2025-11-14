@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Live - 简单看直播</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎥 Simple Live</h1>
+            <p class="subtitle">简简单单看直播</p>
+        </header>
+
+        <main class="main-content">
+            <!-- 平台选择 -->
+            <div class="platform-select-wrapper">
+                <select id="platformSelect" class="platform-select">
+                    <option value="bilibili" selected>📺 哔哩哔哩</option>
+                    <option value="douyu">🎮 斗鱼直播</option>
+                    <option value="huya">🐯 虎牙直播</option>
+                    <option value="douyin">🎵 抖音直播</option>
+                </select>
+            </div>
+
+            <!-- 房间号输入 -->
+            <div class="room-input-section">
+                <div class="input-group">
+                    <input type="text" id="roomId" placeholder="输入房间号，如：545068" class="room-input">
+                    <button id="goBtn" class="go-btn">观看直播</button>
+                </div>
+            </div>
+
+            <!-- 加载状态 -->
+            <div id="loading" class="loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>加载中...</p>
+            </div>
+
+            <!-- 错误提示 -->
+            <div id="error" class="error-message" style="display: none;"></div>
+
+            <!-- 推荐直播间列表 -->
+            <div class="section">
+                <h2 class="section-title">热门直播</h2>
+                <div id="roomList" class="room-grid"></div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>基于 <a href="https://github.com/xiaoyaocz/dart_simple_live" target="_blank">dart_simple_live</a> 项目</p>
+            <p>本项目仅供学习交流使用</p>
+        </footer>
+    </div>
+
+    <script src="/js/sites/bilibili.js"></script>
+    <script src="/js/sites/douyu.js"></script>
+    <script src="/js/sites/huya.js"></script>
+    <script src="/js/sites/douyin.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
