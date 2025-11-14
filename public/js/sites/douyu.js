@@ -1,30 +1,25 @@
 // public/js/sites/douyu.js
 const douyu = {
-    // 获取房间详情
     async getRoomDetail(roomId) {
         const response = await fetch(`/api/douyu/room?room_id=${roomId}`);
-        if (!response.ok) {
-            throw new Error('获取斗鱼房间信息失败');
-        }
         const data = await response.json();
 
-        if (data.error) {
-            throw new Error(data.error);
+        if (data.code !== 0) {
+            throw new Error(data.error || '获取房间信息失败');
         }
 
-        return data;
+        return {
+            roomId: roomId,
+            ...data.data
+        };
     },
 
-    // 获取播放地址
-    async getPlayUrl(roomId, quality = 'hls') {
+    async getPlayUrl(roomId, quality) {
         const response = await fetch(`/api/douyu/play?room_id=${roomId}`);
-        if (!response.ok) {
-            throw new Error('获取斗鱼播放地址失败');
-        }
         const data = await response.json();
 
-        if (data.error) {
-            throw new Error(data.error);
+        if (data.code !== 0) {
+            throw new Error(data.error || '获取播放地址失败');
         }
 
         return {

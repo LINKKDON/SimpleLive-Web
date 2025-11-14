@@ -69,6 +69,7 @@ export async function onRequest(context) {
     }
 
     const result = {
+        code: 0,
         urls: urls,
         type: type
     };
@@ -80,7 +81,7 @@ export async function onRequest(context) {
       },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ code: -1, error: error.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     });

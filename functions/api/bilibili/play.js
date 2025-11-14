@@ -2,7 +2,7 @@
 export async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
-  const roomId = url.searchParams.get('id');
+  const roomId = url.searchParams.get('room_id');
   const quality = url.searchParams.get('quality') || '10000';
 
   if (request.method === 'OPTIONS') {
@@ -42,7 +42,6 @@ export async function onRequest(context) {
       throw new Error(data.message || '获取播放地址失败');
     }
 
-    // 解析播放地址
     const urls = [];
     const streamList = data.data.playurl_info.playurl.stream;
 
@@ -57,14 +56,17 @@ export async function onRequest(context) {
       });
     });
 
-    // 优先非 mcdn 线路
     urls.sort((a, b) => (a.includes('mcdn') ? 1 : -1));
+
+    // 根据第一个 URL 判断类型
+    const firstUrl = urls[0] || '';
+    const type = firstUrl.includes('.m3u8') ? 'hls' : 'flv';
 
     return new Response(
       JSON.stringify({
         code: 0,
         urls,
-        type: 'flv',
+        type,
         headers: {
           Referer: 'https://live.bilibili.com',
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'

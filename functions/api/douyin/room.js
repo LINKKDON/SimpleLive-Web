@@ -41,12 +41,16 @@ export async function onRequest(context) {
     }
 
     const result = {
-        title: room.title || '未知标题',
-        userName: room.owner?.nickname || '未知主播',
-        userAvatar: room.owner?.avatar_thumb?.url_list?.[0] || '',
-        online: room.user_count || 0,
-        introduction: room.owner?.signature || '',
-        status: room.status === 2,
+        code: 0,
+        data: {
+            title: room.title || '未知标题',
+            userName: room.owner?.nickname || '未知主播',
+            userAvatar: room.owner?.avatar_thumb?.url_list?.[0] || '',
+            online: room.user_count || 0,
+            introduction: room.owner?.signature || '',
+            status: room.status === 2,
+            platform: 'douyin'
+        }
     };
 
     return new Response(JSON.stringify(result), {
@@ -56,7 +60,7 @@ export async function onRequest(context) {
       },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ code: -1, error: error.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     });

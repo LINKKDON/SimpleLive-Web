@@ -39,12 +39,16 @@ export async function onRequest(context) {
 
 
     const result = {
-        title: roomData.introduction,
-        userName: roomData.nick,
-        userAvatar: roomData.avatar,
-        online: liveData.attendeeCount,
-        introduction: roomData.introduction,
-        status: roomData.liveStatus === "LIVE",
+        code: 0,
+        data: {
+            title: roomData.introduction,
+            userName: roomData.nick,
+            userAvatar: roomData.avatar,
+            online: liveData.attendeeCount,
+            introduction: roomData.introduction,
+            status: roomData.liveStatus === "LIVE",
+            platform: 'huya'
+        }
     };
 
     return new Response(JSON.stringify(result), {
@@ -54,7 +58,7 @@ export async function onRequest(context) {
       },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ code: -1, error: error.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     });

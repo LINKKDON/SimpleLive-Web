@@ -11,32 +11,17 @@ class BilibiliSite {
      * @returns {Promise<Object>}
      */
     async getRoomDetail(roomId) {
-        try {
-            const response = await fetch(`/api/bilibili/room?id=${roomId}`);
-            const data = await response.json();
-            
-            if (data.code !== 0) {
-                throw new Error(data.message || '获取直播间信息失败');
-            }
-
-            const roomInfo = data.data.room_info;
-            const anchorInfo = data.data.anchor_info.base_info;
-
-            return {
-                roomId: roomInfo.room_id.toString(),
-                title: roomInfo.title,
-                cover: roomInfo.cover,
-                userName: anchorInfo.uname,
-                userAvatar: anchorInfo.face,
-                online: roomInfo.online,
-                status: roomInfo.live_status === 1,
-                introduction: roomInfo.description,
-                platform: this.id
-            };
-        } catch (error) {
-            console.error('获取直播间信息失败:', error);
-            throw error;
+        const response = await fetch(`/api/bilibili/room?room_id=${roomId}`);
+        const data = await response.json();
+        
+        if (data.code !== 0) {
+            throw new Error(data.error || '获取直播间信息失败');
         }
+
+        return {
+            roomId: roomId,
+            ...data.data
+        };
     }
 
     /**
@@ -46,23 +31,18 @@ class BilibiliSite {
      * @returns {Promise<Object>}
      */
     async getPlayUrl(roomId, quality = '10000') {
-        try {
-            const response = await fetch(`/api/bilibili/play?id=${roomId}&quality=${quality}`);
-            const data = await response.json();
-            
-            if (data.code !== 0) {
-                throw new Error(data.error || '获取播放地址失败');
-            }
-
-            return {
-                urls: data.urls,
-                type: data.type,
-                headers: data.headers
-            };
-        } catch (error) {
-            console.error('获取播放地址失败:', error);
-            throw error;
+        const response = await fetch(`/api/bilibili/play?room_id=${roomId}&quality=${quality}`);
+        const data = await response.json();
+        
+        if (data.code !== 0) {
+            throw new Error(data.error || '获取播放地址失败');
         }
+
+        return {
+            urls: data.urls,
+            type: data.type,
+            headers: data.headers
+        };
     }
 
     /**

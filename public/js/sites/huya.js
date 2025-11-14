@@ -1,29 +1,31 @@
 // public/js/sites/huya.js
 const huya = {
-    // 获取房间详情
     getRoomDetail: async (roomId) => {
         const response = await fetch(`/api/huya/room?room_id=${roomId}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
         const data = await response.json();
-        if (data.error) {
-            throw new Error(data.error);
+        
+        if (data.code !== 0) {
+            throw new Error(data.error || '获取房间信息失败');
         }
-        return data;
+        
+        return {
+            roomId: roomId,
+            ...data.data
+        };
     },
 
-    // 获取播放地址
     getPlayUrl: async (roomId, quality) => {
-        const response = await fetch(`/api/huya/play?room_id=${roomId}&quality=${quality}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        const response = await fetch(`/api/huya/play?room_id=${roomId}`);
         const data = await response.json();
-        if (data.error) {
-            throw new Error(data.error);
+        
+        if (data.code !== 0) {
+            throw new Error(data.error || '获取播放地址失败');
         }
-        return data;
+        
+        return {
+            urls: data.urls,
+            type: data.type
+        };
     },
 
     // 格式化在线人数

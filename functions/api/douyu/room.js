@@ -34,14 +34,17 @@ export async function onRequest(context) {
     
     const room = data.data;
 
-    // 格式化返回数据
     const result = {
-      title: room.room_name || '未知标题',
-      userName: room.owner_name || '未知主播',
-      userAvatar: room.avatar || '',
-      online: room.room_biz_all?.hot || 0,
-      introduction: room.show_details || '',
-      status: room.show_status === 1,
+      code: 0,
+      data: {
+        title: room.room_name || '未知标题',
+        userName: room.owner_name || '未知主播',
+        userAvatar: room.avatar || '',
+        online: room.room_biz_all?.hot || 0,
+        introduction: room.show_details || '',
+        status: room.show_status === 1,
+        platform: 'douyu'
+      }
     };
 
     return new Response(JSON.stringify(result), {
@@ -51,9 +54,9 @@ export async function onRequest(context) {
       },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ code: -1, error: error.message }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     });
   }
 }
