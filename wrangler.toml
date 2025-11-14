@@ -9,6 +9,6 @@ pages_build_output_dir = "public"
 [env.production]
 name = "simple-live-web"
 
-# 开发环境配置
-[env.development]
-name = "simple-live-web-dev"
+# 预览环境配置
+[env.preview]
+name = "simple-live-web-preview"
