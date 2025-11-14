@@ -29,14 +29,23 @@ export async function onRequest(context) {
         throw new Error('Could not find room data in Douyin page.');
     }
     const roomData = JSON.parse(decodeURIComponent(roomInfoMatch[1]));
-    const room = roomData.initialState.roomStore.roomInfo.room;
+    
+    const roomStore = roomData?.app?.initialState?.roomStore || roomData?.initialState?.roomStore;
+    if (!roomStore) {
+        throw new Error('Could not find roomStore in Douyin data.');
+    }
+    
+    const room = roomStore.roomInfo?.room;
+    if (!room) {
+        throw new Error('Could not find room info.');
+    }
 
     const result = {
-        title: room.title,
-        userName: room.owner.nickname,
-        userAvatar: room.owner.avatar_thumb.url_list[0],
-        online: room.user_count,
-        introduction: room.owner.signature,
+        title: room.title || '未知标题',
+        userName: room.owner?.nickname || '未知主播',
+        userAvatar: room.owner?.avatar_thumb?.url_list?.[0] || '',
+        online: room.user_count || 0,
+        introduction: room.owner?.signature || '',
         status: room.status === 2,
     };
 

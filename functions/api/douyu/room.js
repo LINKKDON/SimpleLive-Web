@@ -27,9 +27,24 @@ export async function onRequest(context) {
     }
 
     const data = await response.json();
+    
+    if (data.error !== 0 || !data.data) {
+      throw new Error(data.msg || 'Failed to get room info from Douyu');
+    }
+    
+    const room = data.data;
 
-    // 返回处理后的数据
-    return new Response(JSON.stringify(data), {
+    // 格式化返回数据
+    const result = {
+      title: room.room_name || '未知标题',
+      userName: room.owner_name || '未知主播',
+      userAvatar: room.avatar || '',
+      online: room.room_biz_all?.hot || 0,
+      introduction: room.show_details || '',
+      status: room.show_status === 1,
+    };
+
+    return new Response(JSON.stringify(result), {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',

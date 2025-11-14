@@ -29,12 +29,48 @@ export async function onRequest(context) {
         throw new Error('Could not find room data in Douyin page.');
     }
     const roomData = JSON.parse(decodeURIComponent(roomInfoMatch[1]));
-    const room = roomData.initialState.roomStore.roomInfo.room;
-    const streamUrlData = JSON.parse(room.stream_url.flv_pull_url.SD2);
+    
+    const roomStore = roomData?.app?.initialState?.roomStore || roomData?.initialState?.roomStore;
+    if (!roomStore) {
+        throw new Error('Could not find roomStore in Douyin data.');
+    }
+    
+    const room = roomStore.roomInfo?.room;
+    if (!room || !room.stream_url) {
+        throw new Error('Room is not live or stream URL not available.');
+    }
+    
+    const streamUrl = room.stream_url?.flv_pull_url || room.stream_url?.hls_pull_url_map;
+    if (!streamUrl) {
+        throw new Error('Stream URL not found.');
+    }
+    
+    let urls = [];
+    let type = 'flv';
+    
+    if (room.stream_url.flv_pull_url) {
+        const flvUrl = room.stream_url.flv_pull_url.FULL_HD1 || room.stream_url.flv_pull_url.HD1 || room.stream_url.flv_pull_url.SD1 || room.stream_url.flv_pull_url.SD2;
+        if (flvUrl) {
+            const urlData = typeof flvUrl === 'string' ? JSON.parse(flvUrl) : flvUrl;
+            urls = Object.values(urlData);
+        }
+    }
+    
+    if (urls.length === 0 && room.stream_url.hls_pull_url_map) {
+        const hlsUrl = room.stream_url.hls_pull_url_map.FULL_HD1 || room.stream_url.hls_pull_url_map.HD1 || room.stream_url.hls_pull_url_map.SD1;
+        if (hlsUrl) {
+            urls = [hlsUrl];
+            type = 'hls';
+        }
+    }
+    
+    if (urls.length === 0) {
+        throw new Error('No valid stream URL found.');
+    }
 
     const result = {
-        urls: Object.values(streamUrlData),
-        type: 'flv'
+        urls: urls,
+        type: type
     };
 
     return new Response(JSON.stringify(result), {
