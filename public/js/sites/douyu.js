@@ -8,19 +8,11 @@ const douyu = {
         }
         const data = await response.json();
 
-        if (data.error !== 0) {
-            throw new Error(data.msg || '获取斗鱼房间信息失败');
+        if (data.error) {
+            throw new Error(data.error);
         }
 
-        const roomInfo = data.room;
-        return {
-            title: roomInfo.room_name,
-            userName: roomInfo.owner_name,
-            userAvatar: roomInfo.avatar.middle,
-            online: roomInfo.online,
-            introduction: roomInfo.show_details,
-            status: roomInfo.show_status === 1, // 1 表示开播
-        };
+        return data;
     },
 
     // 获取播放地址
